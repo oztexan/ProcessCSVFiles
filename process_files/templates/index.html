@@ -14,8 +14,14 @@ button{display:block}
             <button id='toggleView' class='btn btn-primary'>Toggle View</button>
         </div>
         <div class='row'>
-            <div id='files_msg'></div>
-            <div id='trades_msg'></div>
+          <div id='files_msg'>
+            <h2>Processed Files</h2>
+            <div id='files_msg_list'></div>
+          </div>
+          <div id='trades_msg'>
+            <h2>Processed Trades</h2>
+            <div id='trades_msg_list'></div>
+          </div>
         </div>
     </div>
 
@@ -49,14 +55,14 @@ button{display:block}
                                 cf.forEach(function(e){
                                   str = str + '<p>' + e + '</p>'
                                 })
-                                $('#files_msg').html(str)
+                                $('#files_msg_list').html(str)
 
                                 var cf = JSON.parse(check.trades)
                                 var str = ''
                                 cf.forEach(function(e){
                                   str = str + '<p>' + e + '</p>'
                                 })
-                                $('#trades_msg').html(str)
+                                $('#trades_msg_list').html(str)
                               })
                           },1000)
                       }

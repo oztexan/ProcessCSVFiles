@@ -8,6 +8,7 @@ class ProcessedFiles(models.Model):
         ('Arrived', 'Arrived'),
         ('Processed', 'Processed'),
         ('Deprecated', 'Deprecated'),
+        ('Failed', 'Failed'),
     )
     filename = models.CharField(max_length=120, blank=True, null=True)
     # Enum ['Arrived', 'Processed', 'Deprecated']
@@ -186,5 +187,5 @@ class TradeActivityReport(models.Model):
                              db_column='Venue')
 
     def __str__(self):
-        return "%s %s %s %s" % (self.Qty, self.Ticker,
+        return "%s %s %s %s %s" % (self.source_file.filename, self.Qty, self.Ticker,
                                 self.TradeDate, self.CounterpartyShor)
