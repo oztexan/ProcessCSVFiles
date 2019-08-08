@@ -1,12 +1,6 @@
 '''Models required for app process_files'''
 
-
 from django.db import models
-
-# class ThreadTask(models.Model):
-#     task = models.CharField(max_length=30, blank=True, null=True)
-#     is_done = models.BooleanField(blank=False, default=False)
-
 
 class ProcessedFiles(models.Model):
     '''Keeps record of all files discovered and tracks relevant metadata.'''

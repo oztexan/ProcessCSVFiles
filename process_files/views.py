@@ -34,7 +34,9 @@ def stopThreadTask(request):
 def longTask():
     # previously processed is list of files already processed & stored in database
     # with the status = "processed"
-    POLL.watch_folder(WATCH_FOLDER, 1, os.listdir(WATCH_FOLDER))
+    # print('previously processed', ProcessedFiles.objects.all())
+    #previously_processed = [pf['filename'] for pf in ProcessedFiles.objects().all()]
+    POLL.watch_folder(WATCH_FOLDER, 5)
     # print("Received task",id)
     # time.sleep(3)
     # task = ThreadTask.objects.get(pk=id)

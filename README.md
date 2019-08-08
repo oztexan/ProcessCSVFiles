@@ -16,7 +16,7 @@ ProcessedFiles are recorded with the following information:
 - trade_date
 - generation_date
 
-Any files that do not match one of the following patterns will include only a filename & status
+Any files that do not match one of the following patterns will include a report_type = "Unknown"
 ```
 'TradeActivityReport': r'TradeActivityReport-LIFETRADING-(\d+)-(\d+).csv',
 'PositionReport': r'PositionReport-(\d+)-LIFETRADING-(\d+)-(\d+).csv',
