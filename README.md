@@ -1,6 +1,6 @@
 # Django File Processor
 
-This process_files Django application processes incoming CSV files and records the file arrivals into a database.
+This Django application processes incoming CSV files and records the file arrivals and mock trade position data into a database.
 
 The database includes two tables
 - ProcessedFiles
@@ -16,14 +16,14 @@ ProcessedFiles are recorded with the following information:
 - trade_date
 - generation_date
 
-Any files that do not match one of the following patterns will be include only a filename & status
+Any files that do not match one of the following patterns will include only a filename & status
 ```
 'TradeActivityReport': r'TradeActivityReport-LIFETRADING-(\d+)-(\d+).csv',
 'PositionReport': r'PositionReport-(\d+)-LIFETRADING-(\d+)-(\d+).csv',
 'CollateralReport': r'CollateralReport-LIFETRADING-(\d+)-(\d+).csv'
 ```
 
-Files with a filename that match the pattern TradeActivityReport pattern are further processed into rows in the TradeActivityReport
+Files with a filename that match the pattern TradeActivityReport pattern are further processed into rows in the TradeActivityReport. The status on these files will typically be "P".
 
 - Enhancement: if a file arrives that has a matching name of a file already processed, it will replace the matching files data.
 
@@ -73,7 +73,7 @@ The Poll module which is a long run task can be tested by directly running the m
 python process_files/poll.py
 ```
 Setup to run in a directory that has a 'file_bucket' subdirectory
-  # Touch a file 'fixture1'
-  # Run
-  # File 'fixture1' is ignored assuming it is old
-  # Subsequent touched files are reported
+- Touch a file 'fixture1'
+- Run
+- File 'fixture1' is ignored assuming it is old
+- Subsequent touched files are reported
