@@ -11,17 +11,24 @@ button{display:block}
         <div class='row'>
             <button id='startThread' class='btn btn-primary'>Start Watching</button>
             <div style='clear:both'></div>
+            <button id='toggleView' class='btn btn-primary'>Toggle View</button>
         </div>
         <div class='row'>
-            <div id='thread_msg'></div>
+            <div id='files_msg'></div>
+            <div id='trades_msg'></div>
         </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" ></script>
     <script type='text/javascript'>
         $(document).ready(function(){
+            $('#trades_msg').toggle()
             let alreadyCalled = false;
             let threadInterval = null;
+            $('#toggleView').on('click',function(){
+              $('#files_msg').toggle()
+              $('#trades_msg').toggle()
+            })
             $('#startThread').on('click',function(){
                 if(!alreadyCalled) {
                   $('#startThread').html('Stop Watching');
@@ -32,19 +39,31 @@ button{display:block}
                       url: "/startThread",
                       dataType: "json",
                       success: function(data) {
-                          var msg = $('<div id="placeholder">').text('Task ' + data.status + '')
-                          $('#thread_msg').append(msg)
+                          var msg;
+                          $('#thread_msg').html(msg)
                           var i = 0;
                           threadInterval = setInterval(function(){
                               checkTask("/checkThread", function(check){
-                                  msg.text(JSON.stringify(check))
+                                var cf = JSON.parse(check.files)
+                                var str = ''
+                                cf.forEach(function(e){
+                                  str = str + '<p>' + e + '</p>'
+                                })
+                                $('#files_msg').html(str)
+
+                                var cf = JSON.parse(check.trades)
+                                var str = ''
+                                cf.forEach(function(e){
+                                  str = str + '<p>' + e + '</p>'
+                                })
+                                $('#trades_msg').html(str)
                               })
                           },1000)
                       }
                   })
                 } else {
                   stopTask("/stopThread", function(check){
-                    alreadCalled = false;
+                    alreadyCalled = false;
                     window.clearInterval(threadInterval)
                     $('#startThread').html('Start Watching');
                   })

@@ -4,16 +4,8 @@ from .reporttypes import process_filename
 import csv
 import process_files
 import os
-# from .poll import *
-
-# class PollTestCase(TestCase):
-#     def setUp(self):
-#
-
 
 class ReportTypesTestCase(TestCase):
-    # def setUp(self):
-
     def test_report_types(self):
         filename = 'TradeActivityReport-LIFETRADING-20181004-0500561.csv'
         details = process_filename(filename)
@@ -53,9 +45,18 @@ class ProcessedFilesTestCase(TestCase):
               'trade_date': '20181004',
               'generation_time': '0711836',
               }
+        uk = {'filename': 'CollateralReport-LIFETRADING-20181004-0711836 copy.csv',
+              'status': 'Arrived',
+              'report_type': 'Unknown',
+              'account': '',
+              'trade_date': '',
+              'generation_time': '',
+              }
+
         ProcessedFiles.objects.create(**tar)
         ProcessedFiles.objects.create(**pr)
         ProcessedFiles.objects.create(**cr)
+        ProcessedFiles.objects.create(**uk)
 
     def test_processed_files(self):
         print(ProcessedFiles.objects.all())
@@ -66,6 +67,8 @@ class ProcessedFilesTestCase(TestCase):
         self.assertEqual(cr.generation_time, '0711836')
         pr = ProcessedFiles.objects.get(report_type="TradeActivityReport")
         self.assertEqual(pr.trade_date, '20181004')
+        uk = ProcessedFiles.objects.get(report_type="Unknown")
+        self.assertEqual(pr.status, 'Arrived')
 
 
 class TradeActivityReportTestCase(TestCase):

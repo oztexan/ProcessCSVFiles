@@ -1,6 +1,6 @@
 # Django File Processor
 
-This Django application processes incoming CSV files and records the file arrivals and mock trade position data into a database.
+This application processes CSV files that are dropped periodically into the local directory at the root level "file_bucket" and records the file arrivals and mock trade position data into a database.
 
 The database includes two tables
 - ProcessedFiles
@@ -10,7 +10,7 @@ There is a 1-M relationship between ProcessedFiles and the TradeActivityReport
 
 ProcessedFiles are recorded with the following information:
 - filename
-- status (enum [A for Arrived, P for Processed, D for Deprecated])
+- status (enum [Arrived, Processed, Deprecated])
 - report_type
 - account (can be null)
 - trade_date
@@ -25,7 +25,7 @@ Any files that do not match one of the following patterns will include a report_
 
 Files with a filename that match the pattern TradeActivityReport pattern are further processed into rows in the TradeActivityReport. The status on these files will typically be "P".
 
-- Enhancement: if a file arrives that has a matching name of a file already processed, it will replace the matching files data.
+- Extra Credit: if a file arrives that has a matching name of a file already processed, it will replace the matching files data.  
 
 Files that are present in the directory at startup are ignored as historical.
   - Enhancement to load this from the database table

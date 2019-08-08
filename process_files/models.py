@@ -5,9 +5,9 @@ from django.db import models
 class ProcessedFiles(models.Model):
     '''Keeps record of all files discovered and tracks relevant metadata.'''
     STATUS_TYPES = (
-        ('A', 'Arrived'),
-        ('P', 'Processed'),
-        ('D', 'Deprecated'),
+        ('Arrived', 'Arrived'),
+        ('Processed', 'Processed'),
+        ('Deprecated', 'Deprecated'),
     )
     filename = models.CharField(max_length=120, blank=True, null=True)
     # Enum ['Arrived', 'Processed', 'Deprecated']
@@ -20,6 +20,7 @@ class ProcessedFiles(models.Model):
     account = models.CharField(max_length=120, blank=True, null=True)
     trade_date = models.CharField(max_length=120, blank=True, null=True)
     generation_time = models.CharField(max_length=120, blank=True, null=True)
+    modification_time = models.CharField(max_length=120, blank=True, null=True)
 
     def __str__(self):
         return """%s,
@@ -27,14 +28,17 @@ class ProcessedFiles(models.Model):
         report_type = %s,
         account = %s,
         trade_date = %s,
-        generation_time = %s""" % (
+        generation_time = %s,
+        modification_time = %s""" % (
             self.filename,
             self.status,
             self.report_type,
             self.account,
             self.trade_date,
-            self.generation_time)
-
+            self.generation_time,
+            self.modification_time)
+    class Meta:
+        ordering = ('-modification_time',)
 
 class TradeActivityReport(models.Model):
     '''All trade activity captured through history tagged with source file.'''

@@ -1,0 +1,2 @@
+CounterpartyShor,TradeID,TradeDate,SettlementDate,Ticker,ISIN,Name,ProductShortName,Strategy(ExternalID),Qty,Type,CCYUnderlying,GrossPrice(Local),FXRate,GrossPriceSwap,Comms,MarketCharges,NetPriceSwap,SwapCCY,TradedNotionalAmt,FundingRate,Spread,Performance,FundingReset,DividendEntitlement,InitialMargin,ProductType,RemainingNotionalAmt,Unique Transaction ID,TradeTime,TotalComm,TotalMarket,OrderIns,InstrumentIdentifier,Venue
+THIS Has rubbish in it,,,
