@@ -50,7 +50,7 @@ This thread runs a simple while loop with a call to sleep(POLL_FREQUENCY).  When
 6. If file processing succeeds, any files identified to be replaced are tagged as "deprecated"
 
 
-The frontend polls the backend endpoint '/checkThread' at a 1000ms intervals. The endpoint returns the current processed files and trades for display. 
+The frontend polls the backend endpoint '/checkThread' at a 1000ms intervals. The endpoint returns the current processed files and trades for display.
 
 
 ## Database
@@ -98,8 +98,8 @@ Files that are present in the directory at startup will be processed as new. The
 ## Setup
 
  ```
- git clone TBD
- cd django-file-processor
+ git clone git@github.com:oztexan/ProcessCSVFiles.git
+ cd ProcessCSVFiles
  python3 -m venv env
  source env/bin/activate
  pip3 install -r requirements.txt
