@@ -23,13 +23,11 @@ It fulfills the following requirements:
 
 - Each report may be revised during the day, the prior report should be considered out of date and replaced with this one.
 
-TradeActivityReport and records the file arrivals and mock trade position data into a database.
-
 ## Approach Used to Process Files
 
-The logic for processing the watch folder is in views.py which relies on poll.py for the heavy lifting.
+The logic for processing the watch folder is in views.py and poll.py where the heavy app logic resides.
 
-The polling mechanism can be configured to different directory and polling frequency in views.py
+THe directory being monitored and the polling frequency are set in views.py
 ```
 WATCH_FOLDER = os.path.abspath(os.path.dirname(__name__)) + '/file_bucket'
 POLL_FREQUENCY = 3
@@ -40,27 +38,29 @@ A server side thread is launched in views.py when the frontend calls into the st
 
 This thread runs a simple while loop with a call to sleep(POLL_FREQUENCY).  When it wakes it reviews the files in the directory with respect to the files that have already been processed in the DB.  
 
-1. The list of new files is produced
+1. The list of new files is calculated
 2. This list is iterated
-3. Processed files that match an incoming new file for replacement are retrieved
-4. A candidate entry for the ProcessedFiles tables is produced with a status of ‘Arrived’ and modification time of now
-4. If the file is of type TradeActivityReport, the contents of the file are further processed
-4. a. The file column names must match the db_colname set on the TradeActivityReport object, else the file is failed.
-5. Validation on each row occurs. Each row must have the same number of columns as the header row.  If any row fails, the entire file fails
+3. Replacement files candidates are identified
+4. A candidate entry for the ProcessedFiles tables is produced with a status of ‘Arrived’ and modification time = now
+5. If the file is of type TradeActivityReport, the contents of the file are further processed
+  - The file column names must match the db_colname set on the TradeActivityReport object, else the file is failed.
+  - Validation on each row occurs. Each row must have the same number of columns as the header row.  If any row fails, the entire file fails
+  - If all goes well, the file is saved as "processed", and trades are saved to the database
+  - If any failures occur the file is recorded in the database as failing with a reason (error), no trades are saved.
+6. If file processing succeeds, any files identified to be replaced are tagged as "deprecated"
 
 
-The frontend polls the backend endpoint /checkThread at a 1000ms intervals and allows toggling between a file view and trade view.  Very basic.
+The frontend polls the backend endpoint '/checkThread' at a 1000ms intervals. The endpoint returns the current processed files and trades for display. 
 
 
 ## Database
-
 The database includes two tables
 - ProcessedFiles
 - TradeActivityReport
 
 There is a 1-M relationship between ProcessedFiles and the TradeActivityReport
 
-ProcessedFiles are recorded with the following information:
+ProcessedFiles are recorded with the following information to accomodate all known report types:
 - filename
 - status (enum [Arrived, Processed, Deprecated, Failed: Reason])
 - report_type
@@ -68,6 +68,9 @@ ProcessedFiles are recorded with the following information:
 - trade_date
 - generation_date
 
+TradeActivityReport captures all trades, tagged with their source file.
+
+## File Matching
 Any files that do not match one of the following patterns will be stored in the ProcessedFiles table with a report_type = "Unknown"
 ```
 'TradeActivityReport': r'TradeActivityReport-LIFETRADING-(\d+)-(\d+).csv',
@@ -86,7 +89,7 @@ Files that are present in the directory at startup will be processed as new. The
 
 - reporttypes.py, defines the file patterns and parsing rules for the 3 different file types to be recognised
 
-## Installtion Requirements
+## Installation Requirements
 
  - Python3
  - Django2.1
@@ -105,15 +108,19 @@ Files that are present in the directory at startup will be processed as new. The
  ```
 
 ## Run
- In browser go to `http://localhost:8000`.
+ In a browser visit `http://localhost:8000`.
 
- The UI is very basic.  Two buttons "Start/Stop Watching" and "Toggle View"
+ The UI is very basic.  Two buttons
+ - "Start/Stop Watching"
+ - "Toggle View"
 
  Click "Start Watching" to begin processing files in the "file_bucket" subdirectory.
 
  Add new files to the file_bucket to watch behaviour.
 
- Click "Toggle View" to see a list of the processed trades.  Trades associated with deprecated files are filtered out
+ Click "Toggle View" to switch between processed files and processed trades.
+
+ Note: Trades associated with deprecated files are filtered out
 
 
 ## Assumptions & Limitations
@@ -127,9 +134,11 @@ Files that are present in the directory at startup will be processed as new. The
  Always reload the UI after this process
 
 
- - The front end site is single instance only, multiple browser sessions will cause failures
- - For demo purposes, server polls every 3 seconds, this can be set in the views.py
- - The client polls, checks for updates independently of the server at 1 sec intervals
+ - The front end site is single instance only, multiple browser sessions may cause unexpected behaviour
+
+ - For demo purposes, the server polls every 3 seconds, this can be set in the views.py
+
+ - The client UI calles the server /checkThread endpoint, currently set at a 1 sec interval.  THis can be changed in the template index.html
 
 ## Unit Testing
 Run unit tests (a few written in the tests.py file)
